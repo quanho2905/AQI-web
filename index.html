@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chỉ Số Chất Lượng Không Khí Hà Nội</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>
+        Ô nhiễm không khí tại Hà Nội: Chỉ số chất lượng không khí (AQI) theo
+        thời gian thực
+      </h1>
+    </header>
+
+    <div class="container">
+      <section class="aqi-table">
+        <h2>
+          <span class="aqi-title">Thông Tin AQI</span><br />
+          <span class="update-time"
+            >Cập nhật lần cuối: 04 May 2025, 05:24pm (Local Time)</span
+          >
+        </h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Chỉ số</th>
+              <th>Giá trị</th>
+              <th>Trạng thái</th>
+              <th>Thang AQI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PM2.5</td>
+              <td>83</td>
+              <td><div class="status moderate">Moderate</div></td>
+              <td>
+                <div class="aqi-scale">
+                  <div class="good"></div>
+                  <div class="moderate"></div>
+                  <div class="poor"></div>
+                  <div class="unhealthy"></div>
+                  <div class="severe"></div>
+                  <div class="hazardous"></div>
+                  <div class="dot" style="left: 83%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>PM10</td>
+              <td>58</td>
+              <td><div class="status good">Good</div></td>
+              <td>
+                <div class="aqi-scale">
+                  <div class="good"></div>
+                  <div class="moderate"></div>
+                  <div class="poor"></div>
+                  <div class="unhealthy"></div>
+                  <div class="severe"></div>
+                  <div class="hazardous"></div>
+                  <div class="dot" style="left: 58%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>O3</td>
+              <td>13</td>
+              <td><div class="status good">Good</div></td>
+              <td>
+                <div class="aqi-scale">
+                  <div class="good"></div>
+                  <div class="moderate"></div>
+                  <div class="poor"></div>
+                  <div class="unhealthy"></div>
+                  <div class="severe"></div>
+                  <div class="hazardous"></div>
+                  <div class="dot" style="left: 13%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>NO2</td>
+              <td>57</td>
+              <td><div class="status moderate">Moderate</div></td>
+              <td>
+                <div class="aqi-scale">
+                  <div class="good"></div>
+                  <div class="moderate"></div>
+                  <div class="poor"></div>
+                  <div class="unhealthy"></div>
+                  <div class="severe"></div>
+                  <div class="hazardous"></div>
+                  <div class="dot" style="left: 57%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>SO2</td>
+              <td>6</td>
+              <td><div class="status good">Good</div></td>
+              <td>
+                <div class="aqi-scale">
+                  <div class="good"></div>
+                  <div class="moderate"></div>
+                  <div class="poor"></div>
+                  <div class="unhealthy"></div>
+                  <div class="severe"></div>
+                  <div class="hazardous"></div>
+                  <div class="dot" style="left: 6%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>CO</td>
+              <td>2</td>
+              <td><div class="status good">Good</div></td>
+              <td>
+                <div class="aqi-scale">
+                  <div class="good"></div>
+                  <div class="moderate"></div>
+                  <div class="poor"></div>
+                  <div class="unhealthy"></div>
+                  <div class="severe"></div>
+                  <div class="hazardous"></div>
+                  <div class="dot" style="left: 2%"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="aqi-container">
+          <div class="value-range">
+            <span>0</span>
+            <span>50</span>
+            <span>100</span>
+            <span>150</span>
+            <span>200</span>
+            <span>300</span>
+            <span>301+</span>
+          </div>
+          <div class="aqi-scale">
+            <div class="good"></div>
+            <div class="moderate"></div>
+            <div class="poor"></div>
+            <div class="unhealthy"></div>
+            <div class="severe"></div>
+            <div class="hazardous"></div>
+          </div>
+          <div class="labels">
+            <span>Good</span>
+            <span>Moderate</span>
+            <span>Poor</span>
+            <span>Unhealthy</span>
+            <span>Severe</span>
+            <span>Hazardous</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="map-section">
+        <div id="map" style="height: 400px; margin-top: 20px"></div>
+        <!-- Thêm phần tử chứa bản đồ -->
+
+        <!-- Thêm thư viện Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+        <script>
+          // Khởi tạo bản đồ với Leaflet
+          const map = L.map("map").setView([21.0285, 105.8542], 13); // Đặt vị trí của bản đồ (Hà Nội, Việt Nam)
+
+          // Thêm lớp bản đồ từ OpenStreetMap
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(map);
+
+          // Đánh dấu vị trí trên bản đồ (ví dụ Hà Nội)
+          L.marker([21.0285, 105.8542])
+            .addTo(map)
+            .bindPopup("Hà Nội")
+            .openPopup();
+        </script>
+      </section>
+    </div>
+    <span class="aqi-history">Dữ liệu lịch sử chất lượng không khí</span>
+    <div class="container">
+      <!-- Nút chọn các chỉ số khí nằm ngang -->
+      <div class="tabs">
+        <button class="tablinks" onclick="openChart(event, 'PM2.5')">
+          PM2.5
+        </button>
+        <button class="tablinks" onclick="openChart(event, 'PM10')">
+          PM10
+        </button>
+        <button class="tablinks" onclick="openChart(event, 'NO2')">NO2</button>
+        <button class="tablinks" onclick="openChart(event, 'CO')">CO</button>
+        <button class="tablinks" onclick="openChart(event, 'SO2')">SO2</button>
+      </div>
+
+      <!-- Đồ thị -->
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
+
+      <!-- Nút chọn các ngày nằm dưới đồ thị -->
+      <div class="day-selector">
+        <button class="day-button" onclick="selectDay('5/5')">5/5</button>
+        <button class="day-button" onclick="selectDay('6/5')">6/5</button>
+        <button class="day-button" onclick="selectDay('7/5')">7/5</button>
+        <button class="day-button" onclick="selectDay('8/5')">8/5</button>
+        <button class="day-button" onclick="selectDay('9/5')">9/5</button>
+        <button class="day-button" onclick="selectDay('10/5')">10/5</button>
+        <button class="day-button" onclick="selectDay('11/5')">11/5</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Chỉ Số Chất Lượng Không Khí Hà Nội</p>
+    </footer>
+  </body>
+</html>
