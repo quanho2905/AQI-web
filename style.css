@@ -337,6 +337,14 @@ table td:nth-child(4) {
 }
 
 /* Active tab */
-.tablinks.active {
-  background-color: #45a049;
+
+.tablinks:hover,
+.day-button:hover {
+  background-color: #45a049; /* Màu khi hover */
+}
+
+/* Màu đỏ cho các button khi được nhấn */
+.tablinks.active,
+.day-button.active {
+  background-color: red; /* Màu nền khi nhấn */
 }
